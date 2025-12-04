@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2D5BFF">
+    <meta name="description" content="تطبيق جنيهات - تطبيق توفير المال الحقيقي الذي يساعدك على تحسين وضعك المالي">
+    <title>جنيهات - تطبيق توفير المال</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <style>
+        /* ===== CSS Reset ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #2D5BFF;
+            --primary-dark: #1A49EB;
+            --secondary: #00C2A9;
+            --danger: #FF4757;
+            --warning: #FFA502;
+            --success: #2ED573;
+            --light: #F8F9FA;
+            --dark: #2F3542;
+            --gray: #747D8C;
+            --light-gray: #E9ECEF;
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --border-radius-lg: 24px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --app-height: 100vh;
+        }
+
+        /* ===== Body & App Container ===== */
+        body {
+            background: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.5;
+            overflow: hidden;
+            height: var(--app-height);
+            position: fixed;
+            width: 100%;
+            max-width: 500px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        /* ===== Welcome Screen ===== */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .welcome-container {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .welcome-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-logo-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .welcome-logo-text {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--dark);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-tagline {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .welcome-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .welcome-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            font-size: 16px;
+            transition: var(--transition);
+            text-align: right;
+        }
+
+        .welcome-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .welcome-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: var(--border-radius-sm);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .welcome-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-footer {
+            margin-top: 20px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* ===== App Container ===== */
+        .app-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: white;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .app-container.active {
+            opacity: 1;
+        }
+
+        /* ===== Header ===== */
+        .app-header {
+            padding: 15px 20px 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 0 0 25px 25px;
+            position: relative;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-action-btn {
+            background: rgba(255, 255, 255, 0.15);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .header-action-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .currency {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .balance-change {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .change-positive {
+            color: var(--success);
+            background: rgba(46, 213, 115, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .change-negative {
+            color: var(--danger);
+            background: rgba(255, 71, 87, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* ===== Main Content ===== */
+        .app-main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .app-main::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .app-main::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .app-main::-webkit-scrollbar-thumb {
+            background: var(--light-gray);
+            border-radius: 3px;
+        }
+
+        /* ===== Financial Health Meter ===== */
+        .health-meter {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .health-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .health-score {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .health-status {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .health-progress {
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .health-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .health-tip {
+            font-size: 14px;
+            color: var(--gray);
+            padding: 10px;
+            background: var(--light);
+            border-radius: var(--border-radius-sm);
+            margin-top: 15px;
+        }
+
+        /* ===== Quick Actions ===== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .action-icon.income {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+        }
+
+        .action-icon.expense {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+        }
+
+        .action-icon.savings {
+            background: linear-gradient(135deg, var(--secondary), #00a896);
+        }
+
+        .action-icon.analysis {
+            background: linear-gradient(135deg, #FF9F43, #e67e22);
+        }
+
+        .action-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* ===== Savings Goals ===== */
+        .savings-goals {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .section-link {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .goals-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .goal-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .goal-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .goal-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .goal-amount {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .goal-progress {
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .goal-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            transition: width 0.5s ease;
+        }
+
+        /* ===== Practical Tips ===== */
+        .practical-tips {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .tip-item:hover {
+            background: #e9ecef;
+        }
+
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        /* ===== Expense Analysis ===== */
+        .expense-analysis {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .analysis-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 150px;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bar-value {
+            height: 100px;
+            width: 20px;
+            background: linear-gradient(to top, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* ===== Recent Transactions ===== */
+        .transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .transaction-item {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .transaction-item:hover {
+            background: var(--light);
+        }
+
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .transaction-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaction-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .transaction-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .transaction-amount {
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+
+        .transaction-amount.income {
+            color: var(--success);
+        }
+
+        .transaction-amount.expense {
+            color: var(--danger);
+        }
+
+        /* ===== Bottom Navigation ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--light-gray);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: var(--gray);
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 10px;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(45, 91, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* ===== Floating Action Button ===== */
+        .fab {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(45, 91, 255, 0.3);
+            z-index: 99;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(45, 91, 255, 0.4);
+        }
+
+        /* ===== Modals ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            font-size: 16px;
+            transition: var(--transition);
+            text-align: right;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(45, 91, 255, 0.05);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            z-index: 10000;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            max-width: 80%;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== Progress Bar ===== */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .goals-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-name {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-container">
+            <div class="welcome-logo">
+                <div class="welcome-logo-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="welcome-logo-text">جنيهات</div>
+                <div class="welcome-tagline">
+                    رفيقك العملي في رحلة التوفير<br>
+                    أدوات حقيقية لتحسين وضعك المالي
+                </div>
+            </div>
+            
+            <div class="welcome-form">
+                <input type="text" class="welcome-input" id="userName" placeholder="ما اسمك؟" required>
+                <input type="number" class="welcome-input" id="monthlyIncome" placeholder="ما هو دخلك الشهري؟ (اختياري)">
+                <input type="number" class="welcome-input" id="savingGoal" placeholder="ما هو هدفك الشهري للتوفير؟ (اختياري)">
+                <button class="welcome-btn" id="startJourneyBtn">ابدأ رحلة التوفير</button>
+            </div>
+            
+            <div class="welcome-footer">
+                كل البيانات محفوظة على جهازك فقط - نركز على تحسين وضعك المالي الشخصي
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="app-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="logo-text">جنيهات</div>
+                </div>
+                <div class="header-actions">
+                    <button class="header-action-btn" id="financialHealthBtn">
+                        <i class="fas fa-heartbeat"></i>
+                    </button>
+                    <button class="header-action-btn" id="exportDataBtn">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="balance-card">
+                <div class="balance-label">إجمالي المدخرات</div>
+                <div class="balance-amount">
+                    <span class="amount" id="totalSavings">0</span>
+                    <span class="currency">ج.م</span>
+                </div>
+                <div class="balance-change">
+                    <span class="change-positive" id="savingsProgress">ابدأ رحلة التوفير</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main" id="appMain">
+            <!-- Financial Health Meter -->
+            <div class="health-meter" id="financialHealth">
+                <div class="health-title">صحتك المالية</div>
+                <div class="health-score" id="healthScore">--</div>
+                <div class="health-status" id="healthStatus">ابدأ بإضافة معاملاتك</div>
+                <div class="health-progress">
+                    <div class="health-progress-fill" id="healthProgress" style="width: 0%"></div>
+                </div>
+                <div class="health-tip" id="healthTip">
+                    الصحة المالية تقيس قدرتك على إدارة أموالك وتحقيق أهدافك المالية
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" id="addIncomeBtn">
+                    <div class="action-icon income">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span class="action-name">إضافة دخل</span>
+                </button>
+                
+                <button class="quick-action-btn" id="addExpenseBtn">
+                    <div class="action-icon expense">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <span class="action-name">تسجيل مصروف</span>
+                </button>
+                
+                <button class="quick-action-btn" id="setGoalBtn">
+                    <div class="action-icon savings">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <span class="action-name">هدف توفير</span>
+                </button>
+                
+                <button class="quick-action-btn" id="analysisBtn">
+                    <div class="action-icon analysis">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <span class="action-name">تحليل مالي</span>
+                </button>
+            </div>
+
+            <!-- Savings Goals -->
+            <div class="savings-goals">
+                <div class="section-header">
+                    <h3 class="section-title">أهداف التوفير</h3>
+                    <a href="#" class="section-link" id="addGoalLink">+ إضافة هدف</a>
+                </div>
+                
+                <div class="goals-container" id="goalsContainer">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Practical Tips -->
+            <div class="practical-tips">
+                <div class="section-header">
+                    <h3 class="section-title">نصائح عملية لتوفير المال</h3>
+                </div>
+                
+                <div class="tips-list" id="tipsList">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="section-header">
+                <h3 class="section-title">آخر المعاملات</h3>
+                <a href="#" class="section-link" id="viewAllLink">عرض الكل</a>
+            </div>
+            
+            <div class="transactions-list" id="transactionsList">
+                <!-- Will be populated dynamically -->
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="fabBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-page="home">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">الرئيسية</span>
+            </a>
+            <a href="#" class="nav-item" data-page="transactions">
+                <i class="fas fa-exchange-alt nav-icon"></i>
+                <span class="nav-label">المعاملات</span>
+            </a>
+            <a href="#" class="nav-item" data-page="goals">
+                <i class="fas fa-bullseye nav-icon"></i>
+                <span class="nav-label">الأهداف</span>
+            </a>
+            <a href="#" class="nav-item" data-page="tools">
+                <i class="fas fa-tools nav-icon"></i>
+                <span class="nav-label">الأدوات</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="transactionModalTitle">إضافة معاملة</h3>
+                <button class="modal-close" id="closeTransactionModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">نوع المعاملة</label>
+                    <select class="form-select" id="transactionType">
+                        <option value="income">دخل</option>
+                        <option value="expense">مصروف</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">المبلغ (ج.م)</label>
+                    <input type="number" class="form-input" id="amountInput" placeholder="أدخل المبلغ">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">الفئة</label>
+                    <select class="form-select" id="categorySelect">
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">التاريخ</label>
+                    <input type="date" class="form-input" id="dateInput">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">الوصف (اختياري)</label>
+                    <input type="text" class="form-input" id="descriptionInput" placeholder="وصف المعاملة">
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-outline" id="cancelTransaction">إلغاء</button>
+                    <button class="btn btn-primary" id="saveTransaction">حفظ المعاملة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة هدف توفير</h3>
+                <button class="modal-close" id="closeGoalModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">اسم الهدف</label>
+                    <input type="text" class="form-input" id="goalName" placeholder="مثال: توفير لشراء هاتف">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">المبلغ المستهدف (ج.م)</label>
+                    <input type="number" class="form-input" id="goalTarget" placeholder="المبلغ الذي تريد توفيره">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">المبلغ المدخر حالياً (ج.م)</label>
+                    <input type="number" class="form-input" id="goalCurrent" placeholder="المبلغ المدخر حتى الآن">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">تاريخ الانتهاء</label>
+                    <input type="date" class="form-input" id="goalDeadline">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">وصف الهدف (اختياري)</label>
+                    <textarea class="form-textarea" id="goalDescription" placeholder="صف هدفك" rows="3"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-outline" id="cancelGoal">إلغاء</button>
+                    <button class="btn btn-success" id="saveGoal">حفظ الهدف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="financialAnalysisModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">تحليل مالي متقدم</h3>
+                <button class="modal-close" id="closeAnalysisModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="analysisContent">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="financialToolsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">أدوات مالية مفيدة</h3>
+                <button class="modal-close" id="closeToolsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="toolsContent">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== تطبيق جنيهات - تطبيق توفير حقيقي وعملي =====
+        
+        // البيانات الأساسية - مصفرة بالكامل وحقيقية
+        let appData = {
+            user: null,
+            balance: 0,
+            totalIncome: 0,
+            totalExpenses: 0,
+            totalSavings: 0,
+            monthlyIncome: 0,
+            monthlySavingGoal: 0,
+            transactions: [],
+            goals: [],
+            categories: {
+                income: {
+                    salary: { name: "راتب", icon: "💰", color: "#2ED573" },
+                    freelance: { name: "عمل حر", icon: "💼", color: "#00C2A9" },
+                    investment: { name: "استثمار", icon: "📈", color: "#FF9F43" },
+                    gift: { name: "هدية", icon: "🎁", color: "#F368E0" },
+                    other_income: { name: "دخل آخر", icon: "💵", color: "#54A0FF" }
+                },
+                expense: {
+                    food: { name: "طعام", icon: "🍕", color: "#FF6B6B" },
+                    transport: { name: "مواصلات", icon: "🚗", color: "#54A0FF" },
+                    shopping: { name: "تسوق", icon: "🛍️", color: "#5F27CD" },
+                    bills: { name: "فواتير", icon: "📄", color: "#00D2D3" },
+                    entertainment: { name: "ترفيه", icon: "🎬", color: "#FF9F43" },
+                    health: { name: "صحة", icon: "🏥", color: "#1DD1A1" },
+                    education: { name: "تعليم", icon: "📚", color: "#F368E0" },
+                    other_expense: { name: "مصروف آخر", icon: "📦", color: "#8395A7" }
+                }
+            }
+        };
+
+        // نصائح عملية حقيقية لتوفير المال
+        const practicalTips = [
+            {
+                title: "تخطيط الوجبات الأسبوعية",
+                text: "خطط وجباتك للأسبوع وقم بشراء المكونات مرة واحدة. يوفر 25% من فاتورة الطعام.",
+                icon: "📋"
+            },
+            {
+                title: "استخدام قوائم التسوق",
+                text: "لا تتسوق بدون قائمة. التزم بما تحتاجه فقط لتجنب الشراء العشوائي.",
+                icon: "🛒"
+            },
+            {
+                title: "إعادة النظر في الاشتراكات",
+                text: "راجع اشتراكاتك الشهرية وألغِ ما لا تستخدمه بانتظام.",
+                icon: "📱"
+            },
+            {
+                title: "الصيانة الوقائية",
+                text: "الصيانة الدورية للسيارة والأجهزة توفر تكاليف الإصلاحات الكبيرة.",
+                icon: "🔧"
+            },
+            {
+                title: "شراء المستعمل",
+                text: "فكر في شراء الكتب والأثاث المستعمل. يوفر 50-70% من التكلفة.",
+                icon: "🔄"
+            },
+            {
+                title: "تقليل استهلاك الطاقة",
+                text: "أطفئ الأجهزة غير المستخدمة. يمكن أن توفر 15% من فاتورة الكهرباء.",
+                icon: "💡"
+            }
+        ];
+
+        // أهداف توفير عملية
+        const practicalGoals = [
+            {
+                name: "صندوق الطوارئ",
+                target: 10000,
+                current: 0,
+                icon: "🆘",
+                color: "#FF4757",
+                description: "مبلغ للطوارئ يساوي 3-6 أشهر من المصروفات"
+            },
+            {
+                name: "تقليل الديون",
+                target: 5000,
+                current: 0,
+                icon: "📉",
+                color: "#2D5BFF",
+                description: "سداد جزء من الديون لتحسين الصحة المالية"
+            },
+            {
+                name: "التعليم والتنمية",
+                target: 3000,
+                current: 0,
+                icon: "🎓",
+                color: "#00C2A9",
+                description: "تطوير المهارات لزيادة الدخل"
+            }
+        ];
+
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadUserData();
+        });
+
+        // تحميل بيانات المستخدم
+        function loadUserData() {
+            const savedData = localStorage.getItem('genihatRealData');
+            if (savedData) {
+                try {
+                    appData = JSON.parse(savedData);
+                    // إخفاء شاشة الترحيب
+                    setTimeout(() => {
+                        document.getElementById('welcomeScreen').classList.add('hidden');
+                        document.getElementById('appContainer').classList.add('active');
+                        updateDashboard();
+                        showHomePage();
+                    }, 500);
+                } catch (e) {
+                    console.error("Error loading user data:", e);
+                }
+            }
+        }
+
+        // حفظ بيانات المستخدم
+        function saveUserData() {
+            try {
+                localStorage.setItem('genihatRealData', JSON.stringify(appData));
+            } catch (e) {
+                console.error("Error saving user data:", e);
+            }
+        }
+
+        // تهيئة الأحداث
+        function initializeApp() {
+            // زر بدء الرحلة
+            document.getElementById('startJourneyBtn').addEventListener('click', startJourney);
+            
+            // أزرار الإجراءات السريعة
+            document.getElementById('addIncomeBtn').addEventListener('click', () => {
+                showTransactionModal('income');
+            });
+            
+            document.getElementById('addExpenseBtn').addEventListener('click', () => {
+                showTransactionModal('expense');
+            });
+            
+            document.getElementById('setGoalBtn').addEventListener('click', showGoalModal);
+            document.getElementById('analysisBtn').addEventListener('click', showFinancialAnalysis);
+            document.getElementById('addGoalLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showGoalModal();
+            });
+            
+            // الصحة المالية
+            document.getElementById('financialHealthBtn').addEventListener('click', showHealthDetails);
+            
+            // تصدير البيانات
+            document.getElementById('exportDataBtn').addEventListener('click', exportData);
+            
+            // الزر العائم
+            document.getElementById('fabBtn').addEventListener('click', () => {
+                showTransactionModal('expense');
+            });
+            
+            // التنقل
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleNavigation(this);
+                });
+            });
+            
+            // أحداث النوافذ المنبثقة
+            document.getElementById('closeTransactionModal').addEventListener('click', closeTransactionModal);
+            document.getElementById('cancelTransaction').addEventListener('click', closeTransactionModal);
+            document.getElementById('saveTransaction').addEventListener('click', saveTransaction);
+            
+            document.getElementById('closeGoalModal').addEventListener('click', closeGoalModal);
+            document.getElementById('cancelGoal').addEventListener('click', closeGoalModal);
+            document.getElementById('saveGoal').addEventListener('click', saveGoal);
+            
+            document.getElementById('closeAnalysisModal').addEventListener('click', closeAnalysisModal);
+            document.getElementById('closeToolsModal').addEventListener('click', closeToolsModal);
+            
+            // عرض الكل
+            document.getElementById('viewAllLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showTransactionsPage();
+            });
+            
+            // إغلاق النوافذ بالنقر خارجها
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+            
+            // تهيئة التاريخ
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').value = today;
+            document.getElementById('goalDeadline').value = new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0];
+        }
+
+        // بدء رحلة التوفير
+        function startJourney() {
+            const userName = document.getElementById('userName').value;
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const savingGoal = parseFloat(document.getElementById('savingGoal').value) || 0;
+            
+            if (!userName) {
+                showToast('يرجى إدخال اسمك');
+                return;
+            }
+            
+            // إنشاء مستخدم جديد
+            appData.user = {
+                name: userName,
+                joinDate: new Date().toISOString().split('T')[0],
+                monthlyIncome: monthlyIncome,
+                monthlySavingGoal: savingGoal
+            };
+            
+            appData.monthlyIncome = monthlyIncome;
+            appData.monthlySavingGoal = savingGoal;
+            
+            // إضافة أهداف عملية
+            appData.goals = [...practicalGoals];
+            
+            // حفظ البيانات
+            saveUserData();
+            
+            // إخفاء شاشة الترحيب
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('appContainer').classList.add('active');
+                updateDashboard();
+                showHomePage();
+                showToast(`مرحباً ${userName}! بدأت رحلة التوفير بنجاح 🎉`);
+            }, 500);
+        }
+
+        // تحديث لوحة التحكم
+        function updateDashboard() {
+            if (!appData.user) return;
+            
+            // حساب الإحصائيات
+            appData.totalIncome = appData.transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            appData.totalExpenses = appData.transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            appData.totalSavings = appData.totalIncome - appData.totalExpenses;
+            appData.balance = appData.totalSavings;
+            
+            // تحديث عرض المدخرات
+            document.getElementById('totalSavings').textContent = formatCurrency(appData.totalSavings);
+            
+            // تحديث تقدم المدخرات
+            const progressElement = document.getElementById('savingsProgress');
+            if (appData.monthlySavingGoal > 0) {
+                const progress = (appData.totalSavings / appData.monthlySavingGoal) * 100;
+                progressElement.textContent = `${Math.min(progress, 100).toFixed(1)}% من هدفك الشهري`;
+                progressElement.className = progress >= 100 ? 'change-positive' : 'change-positive';
+            } else if (appData.totalSavings > 0) {
+                progressElement.textContent = `+${formatCurrency(appData.totalSavings)} مدخرات`;
+                progressElement.className = 'change-positive';
+            } else if (appData.totalExpenses > 0) {
+                progressElement.textContent = `-${formatCurrency(appData.totalExpenses)} مصروفات`;
+                progressElement.className = 'change-negative';
+            } else {
+                progressElement.textContent = 'ابدأ بإضافة معاملاتك';
+                progressElement.className = 'change-positive';
+            }
+            
+            // تحديث الصحة المالية
+            updateFinancialHealth();
+            
+            // حفظ البيانات
+            saveUserData();
+        }
+
+        // تحديث الصحة المالية
+        function updateFinancialHealth() {
+            if (appData.transactions.length === 0) {
+                document.getElementById('healthScore').textContent = "--";
+                document.getElementById('healthStatus').textContent = "ابدأ بإضافة معاملاتك";
+                document.getElementById('healthProgress').style.width = "0%";
+                document.getElementById('healthTip').textContent = "الصحة المالية تقيس قدرتك على إدارة أموالك وتحقيق أهدافك المالية";
+                return;
+            }
+            
+            // حساب نقاط الصحة المالية
+            let score = 50; // نقطة أساسية
+            
+            // عامل 1: نسبة التوفير
+            if (appData.monthlyIncome > 0) {
+                const savingRate = (appData.totalSavings / appData.monthlyIncome) * 100;
+                if (savingRate >= 20) score += 30;
+                else if (savingRate >= 10) score += 20;
+                else if (savingRate >= 5) score += 10;
+                else if (savingRate > 0) score += 5;
+                else score -= 10;
+            }
+            
+            // عامل 2: تحقيق الأهداف
+            const goalsProgress = appData.goals.reduce((sum, goal) => {
+                return sum + (goal.target > 0 ? (goal.current / goal.target) * 100 : 0);
+            }, 0) / (appData.goals.length || 1);
+            
+            if (goalsProgress >= 100) score += 20;
+            else if (goalsProgress >= 50) score += 10;
+            else if (goalsProgress > 0) score += 5;
+            
+            // عامل 3: تنوع الدخل
+            const incomeCategories = new Set(appData.transactions
+                .filter(t => t.type === 'income')
+                .map(t => t.category)
+            ).size;
+            
+            if (incomeCategories >= 3) score += 10;
+            else if (incomeCategories >= 2) score += 5;
+            
+            // عامل 4: التحكم في المصروفات
+            if (appData.totalExpenses > 0 && appData.monthlyIncome > 0) {
+                const expenseRatio = (appData.totalExpenses / appData.monthlyIncome) * 100;
+                if (expenseRatio <= 50) score += 10;
+                else if (expenseRatio <= 70) score += 5;
+                else if (expenseRatio > 90) score -= 10;
+            }
+            
+            // ضبط النتيجة بين 0 و 100
+            score = Math.max(0, Math.min(100, Math.round(score)));
+            
+            // تحديث العرض
+            document.getElementById('healthScore').textContent = score;
+            document.getElementById('healthProgress').style.width = `${score}%`;
+            
+            // تحديث الحالة والنصيحة
+            let status = "";
+            let tip = "";
+            
+            if (score >= 80) {
+                status = "ممتازة 🎉";
+                tip = "أداء رائع! استمر في الحفاظ على عاداتك المالية الجيدة.";
+            } else if (score >= 60) {
+                status = "جيدة 👍";
+                tip = "أداء جيد. يمكنك تحسينه بالمزيد من التخطيط والالتزام.";
+            } else if (score >= 40) {
+                status = "متوسطة ⚠️";
+                tip = "هناك مجال للتحسين. راجع مصروفاتك وحدد أولوياتك.";
+            } else {
+                status = "تحتاج تحسين 💡";
+                tip = "ابدأ بتسجيل جميع معاملاتك ووضع أهداف صغيرة قابلة للتحقيق.";
+            }
+            
+            document.getElementById('healthStatus').textContent = status;
+            document.getElementById('healthTip').textContent = tip;
+        }
+
+        // عرض تفاصيل الصحة المالية
+        function showHealthDetails() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            let content = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">تحليل الصحة المالية</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+            `;
+            
+            if (appData.transactions.length === 0) {
+                content += `
+                    <div class="empty-state">
+                        <i class="fas fa-heartbeat empty-icon"></i>
+                        <div class="empty-text">لا توجد بيانات كافية للتحليل</div>
+                        <p style="font-size: 14px; color: var(--gray); margin-top: 10px;">ابدأ بإضافة معاملاتك لتحليل صحتك المالية</p>
+                    </div>
+                `;
+            } else {
+                // تحليل النقاط
+                content += `
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: 700; margin-bottom: 15px;">🔍 تحليل نقاط القوة والضعف:</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                `;
+                
+                // نسبة التوفير
+                if (appData.monthlyIncome > 0) {
+                    const savingRate = (appData.totalSavings / appData.monthlyIncome) * 100;
+                    let savingStatus = savingRate >= 20 ? "✅ قوة" : savingRate >= 10 ? "⚠️ مقبول" : "💡 يحتاج تحسين";
+                    content += `
+                        <div style="padding: 10px; background: var(--light); border-radius: var(--border-radius-sm);">
+                            <div style="font-weight: 600;">نسبة التوفير: ${savingRate.toFixed(1)}%</div>
+                            <div style="font-size: 14px; color: var(--gray);">${savingStatus} - الهدف المثالي 20% من الدخل</div>
+                        </div>
+                    `;
+                }
+                
+                // تحقيق الأهداف
+                const goalsProgress = appData.goals.reduce((sum, goal) => {
+                    return sum + (goal.target > 0 ? (goal.current / goal.target) * 100 : 0);
+                }, 0) / (appData.goals.length || 1);
+                
+                let goalsStatus = goalsProgress >= 100 ? "✅ ممتاز" : goalsProgress >= 50 ? "⚠️ جيد" : "💡 يحتاج تحسين";
+                content += `
+                    <div style="padding: 10px; background: var(--light); border-radius: var(--border-radius-sm);">
+                        <div style="font-weight: 600;">تحقيق الأهداف: ${goalsProgress.toFixed(1)}%</div>
+                        <div style="font-size: 14px; color: var(--gray);">${goalsStatus} - ${appData.goals.length} هدف</div>
+                    </div>
+                `;
+                
+                // تنوع الدخل
+                const incomeCategories = new Set(appData.transactions
+                    .filter(t => t.type === 'income')
+                    .map(t => t.category)
+                ).size;
+                
+                let incomeStatus = incomeCategories >= 3 ? "✅ ممتاز" : incomeCategories >= 2 ? "⚠️ جيد" : "💡 يحتاج تحسين";
+                content += `
+                    <div style="padding: 10px; background: var(--light); border-radius: var(--border-radius-sm);">
+                        <div style="font-weight: 600;">تنوع مصادر الدخل: ${incomeCategories}</div>
+                        <div style="font-size: 14px; color: var(--gray);">${incomeStatus} - مصادر دخل متنوعة تقلل المخاطر</div>
+                    </div>
+                `;
+                
+                content += `
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: var(--border-radius-sm); border-right: 4px solid var(--primary);">
+                        <div style="font-weight: 700; margin-bottom: 10px;">💡 توصيات للتحسين:</div>
+                        <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                `;
+                
+                // توصيات مخصصة
+                const recommendations = [];
+                
+                if (appData.monthlyIncome > 0) {
+                    const savingRate = (appData.totalSavings / appData.monthlyIncome) * 100;
+                    if (savingRate < 10) {
+                        recommendations.push("حاول زيادة نسبة التوفير إلى 10% على الأقل من دخلك");
+                    }
+                }
+                
+                if (appData.goals.some(g => (g.current / g.target) < 0.5)) {
+                    recommendations.push("ركز على هدف أو هدفين لتحقيق تقدم ملموس");
+                }
+                
+                if (incomeCategories < 2 && appData.transactions.filter(t => t.type === 'income').length > 0) {
+                    recommendations.push("ابحث عن مصادر دخل إضافية لتقليل الاعتماد على مصدر واحد");
+                }
+                
+                if (recommendations.length > 0) {
+                    content += "<ul style='padding-right: 20px;'>";
+                    recommendations.forEach(rec => {
+                        content += `<li style='margin-bottom: 8px;'>${rec}</li>`;
+                    });
+                    content += "</ul>";
+                } else {
+                    content += "أداء ممتاز! استمر في الحفاظ على عاداتك المالية الجيدة.";
+                }
+                
+                content += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            content += `
+                        <div class="form-actions" style="margin-top: 30px;">
+                            <button class="btn btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">
+                                فهمت، شكراً!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.innerHTML = content;
+            document.body.appendChild(modal);
+        }
+
+        // عرض صفحة الرئيسية
+        function showHomePage() {
+            updateDashboard();
+            
+            // تحديث أهداف التوفير
+            const goalsContainer = document.getElementById('goalsContainer');
+            if (appData.goals.length === 0) {
+                goalsContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: span 2;">
+                        <div class="empty-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="empty-text">لا توجد أهداف حالياً</div>
+                        <button class="btn btn-primary" onclick="showGoalModal()" style="margin-top: 10px;">
+                            إضافة أول هدف
+                        </button>
+                    </div>
+                `;
+            } else {
+                goalsContainer.innerHTML = appData.goals.map((goal, index) => {
+                    const progress = goal.target > 0 ? (goal.current / goal.target * 100) : 0;
+                    return `
+                        <div class="goal-card" onclick="editGoal(${index})">
+                            <div class="goal-icon" style="background: ${goal.color}">
+                                ${goal.icon}
+                            </div>
+                            <div class="goal-name">${goal.name}</div>
+                            <div class="goal-amount">${formatCurrency(goal.current)} / ${formatCurrency(goal.target)}</div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // تحديث النصائح العملية
+            const tipsList = document.getElementById('tipsList');
+            tipsList.innerHTML = practicalTips.slice(0, 3).map(tip => `
+                <div class="tip-item">
+                    <div class="tip-icon">${tip.icon}</div>
+                    <div class="tip-content">
+                        <div class="tip-title">${tip.title}</div>
+                        <div class="tip-text">${tip.text}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // تحديث المعاملات الأخيرة
+            updateRecentTransactions();
+        }
+
+        // تحديث المعاملات الأخيرة
+        function updateRecentTransactions() {
+            const transactionsList = document.getElementById('transactionsList');
+            
+            if (appData.transactions.length === 0) {
+                transactionsList.innerHTML = `
+                    <div class="empty-state" style="padding: 20px;">
+                        <div class="empty-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="empty-text">لا توجد معاملات حالياً</div>
+                        <button class="btn btn-primary" onclick="showTransactionModal('income')" style="margin-top: 10px;">
+                            إضافة أول معاملة
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // عرض آخر 5 معاملات
+            const recentTransactions = [...appData.transactions]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            transactionsList.innerHTML = recentTransactions.map(transaction => {
+                const category = appData.categories[transaction.type][transaction.category];
+                const isIncome = transaction.type === 'income';
+                
+                return `
+                    <div class="transaction-item" onclick="editTransaction('${transaction.id}')">
+                        <div class="transaction-icon" style="background: ${category.color}">
+                            ${category.icon}
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">${transaction.description || category.name}</div>
+                            <div class="transaction-info">
+                                <span>${formatDate(transaction.date)}</span>
+                                <span>${category.name}</span>
+                            </div>
+                        </div>
+                        <div class="transaction-amount ${isIncome ? 'income' : 'expense'}">
+                            ${isIncome ? '+' : '-'}${formatCurrency(transaction.amount)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // عرض صفحة المعاملات
+        function showTransactionsPage() {
+            document.getElementById('appMain').innerHTML = `
+                <div class="section-header">
+                    <h3 class="section-title">جميع المعاملات</h3>
+                    <button class="btn btn-primary" onclick="showTransactionModal('income')" style="padding: 8px 16px; font-size: 14px;">
+                        + إضافة معاملة
+                    </button>
+                </div>
+                
+                <div class="transactions-list" id="allTransactionsList">
+                    ${getAllTransactionsHTML()}
+                </div>
+                
+                <div class="stats-container" style="margin-top: 20px;">
+                    <div class="stat-card" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <div>
+                                <div style="font-size: 14px; color: var(--gray);">إجمالي الدخل</div>
+                                <div style="font-size: 24px; font-weight: 800; color: var(--success);">${formatCurrency(appData.totalIncome)}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; color: var(--gray);">إجمالي المصروفات</div>
+                                <div style="font-size: 24px; font-weight: 800; color: var(--danger);">${formatCurrency(appData.totalExpenses)}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--light); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 14px; color: var(--gray);">صافي المدخرات</div>
+                            <div style="font-size: 32px; font-weight: 800; color: var(--primary);">${formatCurrency(appData.totalSavings)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // عرض صفحة الأهداف
+        function showGoalsPage() {
+            document.getElementById('appMain').innerHTML = `
+                <div class="section-header">
+                    <h3 class="section-title">أهداف التوفير</h3>
+                    <button class="btn btn-primary" onclick="showGoalModal()" style="padding: 8px 16px; font-size: 14px;">
+                        + إضافة هدف
+                    </button>
+                </div>
+                
+                <div class="goals-container" style="margin-bottom: 20px;">
+                    ${appData.goals.map((goal, index) => {
+                        const progress = goal.target > 0 ? (goal.current / goal.target * 100) : 0;
+                        const remaining = goal.target - goal.current;
+                        const daysLeft = goal.deadline ? Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+                        
+                        return `
+                            <div class="goal-card" onclick="editGoal(${index})">
+                                <div class="goal-icon" style="background: ${goal.color}">
+                                    ${goal.icon}
+                                </div>
+                                <div class="goal-name">${goal.name}</div>
+                                <div class="goal-amount">${formatCurrency(goal.current)} / ${formatCurrency(goal.target)}</div>
+                                <div class="goal-progress">
+                                    <div class="goal-progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                                </div>
+                                <div style="margin-top: 10px; font-size: 12px; color: var(--gray);">
+                                    ${remaining > 0 ? `متبقي: ${formatCurrency(remaining)}` : '🎉 تم تحقيق الهدف!'}
+                                    ${daysLeft > 0 ? ` | ${daysLeft} يوم متبقي` : ''}
+                                </div>
+                                ${goal.description ? `<div style="margin-top: 5px; font-size: 12px; color: var(--gray);">${goal.description}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <div class="progress-container" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                    <div class="progress-header">
+                        <span>التقدم الشهري</span>
+                        <span>${((appData.totalSavings / (appData.monthlySavingGoal || 1)) * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${Math.min((appData.totalSavings / (appData.monthlySavingGoal || 1)) * 100, 100)}%"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; color: var(--gray); font-size: 14px;">
+                        ${formatCurrency(appData.totalSavings)} من ${formatCurrency(appData.monthlySavingGoal)} هدف شهري
+                    </div>
+                </div>
+            `;
+        }
+
+        // عرض صفحة الأدوات
+        function showToolsPage() {
+            document.getElementById('appMain').innerHTML = `
+                <div style="background: white; padding: 30px 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; margin-bottom: 20px;">
+                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin: 0 auto 15px;">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div style="font-size: 24px; font-weight: 800; margin-bottom: 5px;">أدوات مالية مفيدة</div>
+                    <div style="color: var(--gray); margin-bottom: 20px;">أدوات عملية لمساعدتك في إدارة أموالك</div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <div class="tool-card" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="showBudgetCalculator()">
+                        <div style="width: 60px; height: 60px; background: rgba(45, 91, 255, 0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--primary); margin: 0 auto 15px;">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div style="font-weight: 700; margin-bottom: 5px;">حاسبة الميزانية</div>
+                        <div style="font-size: 12px; color: var(--gray);">حساب ميزانيتك الشهرية</div>
+                    </div>
+                    
+                    <div class="tool-card" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="showDebtCalculator()">
+                        <div style="width: 60px; height: 60px; background: rgba(255, 71, 87, 0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--danger); margin: 0 auto 15px;">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div style="font-weight: 700; margin-bottom: 5px;">حاسبة الديون</div>
+                        <div style="font-size: 12px; color: var(--gray);">تخطيط سداد الديون</div>
+                    </div>
+                    
+                    <div class="tool-card" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="showSavingPlan()">
+                        <div style="width: 60px; height: 60px; background: rgba(0, 194, 169, 0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--secondary); margin: 0 auto 15px;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div style="font-weight: 700; margin-bottom: 5px;">خطة التوفير</div>
+                        <div style="font-size: 12px; color: var(--gray);">إنشاء خطة توفير مخصصة</div>
+                    </div>
+                    
+                    <div class="tool-card" style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="showExpenseAnalyzer()">
+                        <div style="width: 60px; height: 60px; background: rgba(255, 159, 67, 0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #FF9F43; margin: 0 auto 15px;">
+                            <i class="fas fa-search-dollar"></i>
+                        </div>
+                        <div style="font-weight: 700; margin-bottom: 5px;">محلل المصروفات</div>
+                        <div style="font-size: 12px; color: var(--gray);">تحليل أنماط صرفك</div>
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                    <div style="font-weight: 700; margin-bottom: 15px;">📊 أدوات إضافية</div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="padding: 15px; background: var(--light); border-radius: var(--border-radius-sm); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="exportData()">
+                            <div>
+                                <div style="font-weight: 600;">تصدير البيانات</div>
+                                <div style="font-size: 12px; color: var(--gray);">حفظ نسخة احتياطية من بياناتك</div>
+                            </div>
+                            <i class="fas fa-download" style="color: var(--primary);"></i>
+                        </div>
+                        
+                        <div style="padding: 15px; background: var(--light); border-radius: var(--border-radius-sm); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="importData()">
+                            <div>
+                                <div style="font-weight: 600;">استيراد البيانات</div>
+                                <div style="font-size: 12px; color: var(--gray);">استعادة بيانات من نسخة احتياطية</div>
+                            </div>
+                            <i class="fas fa-upload" style="color: var(--primary);"></i>
+                        </div>
+                        
+                        <div style="padding: 15px; background: rgba(255, 71, 87, 0.1); border-radius: var(--border-radius-sm); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="confirmReset()">
+                            <div>
+                                <div style="font-weight: 600; color: var(--danger);">حذف جميع البيانات</div>
+                                <div style="font-size: 12px; color: var(--danger); opacity: 0.8;">إعادة تعيين التطبيق</div>
+                            </div>
+                            <i class="fas fa-trash" style="color: var(--danger);"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // التعامل مع التنقل
+        function handleNavigation(navItem) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            navItem.classList.add('active');
+            
+            const page = navItem.dataset.page;
+            
+            switch(page) {
+                case 'home':
+                    showHomePage();
+                    break;
+                case 'transactions':
+                    showTransactionsPage();
+                    break;
+                case 'goals':
+                    showGoalsPage();
+                    break;
+                case 'tools':
+                    showToolsPage();
+                    break;
+            }
+        }
+
+        // عرض نافذة المعاملة
+        function showTransactionModal(type) {
+            if (!appData.user) return;
+            
+            const modal = document.getElementById('transactionModal');
+            const title = document.getElementById('transactionModalTitle');
+            const typeSelect = document.getElementById('transactionType');
+            const categorySelect = document.getElementById('categorySelect');
+            
+            title.textContent = type === 'income' ? 'إضافة دخل' : 'تسجيل مصروف';
+            typeSelect.value = type;
+            
+            // تحديث خيارات الفئات
+            categorySelect.innerHTML = '';
+            const categories = appData.categories[type];
+            
+            Object.keys(categories).forEach(key => {
+                const category = categories[key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${category.icon} ${category.name}`;
+                categorySelect.appendChild(option);
+            });
+            
+            // تعيين التاريخ الحالي
+            document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+            
+            modal.classList.add('active');
+            document.getElementById('amountInput').focus();
+        }
+
+        // حفظ المعاملة
+        function saveTransaction() {
+            const type = document.getElementById('transactionType').value;
+            const amount = parseFloat(document.getElementById('amountInput').value);
+            const category = document.getElementById('categorySelect').value;
+            const date = document.getElementById('dateInput').value;
+            const description = document.getElementById('descriptionInput').value;
+            
+            if (!amount || amount <= 0) {
+                showToast('يرجى إدخال مبلغ صحيح');
+                return;
+            }
+            
+            if (!category) {
+                showToast('يرجى اختيار فئة');
+                return;
+            }
+            
+            const transaction = {
+                id: Date.now().toString(),
+                type: type,
+                amount: amount,
+                category: category,
+                description: description,
+                date: date,
+                timestamp: new Date().toISOString()
+            };
+            
+            appData.transactions.push(transaction);
+            
+            closeTransactionModal();
+            updateDashboard();
+            
+            // رسالة نجاح مخصصة
+            const categoryName = appData.categories[type][category].name;
+            const message = type === 'income' 
+                ? `تم إضافة دخل جديد: ${formatCurrency(amount)} (${categoryName})`
+                : `تم تسجيل مصروف جديد: ${formatCurrency(amount)} (${categoryName})`;
+            
+            showToast(message);
+            
+            // تحديث العرض بناءً على الصفحة الحالية
+            const activePage = document.querySelector('.nav-item.active').dataset.page;
+            if (activePage === 'home') {
+                updateRecentTransactions();
+            } else if (activePage === 'transactions') {
+                document.getElementById('allTransactionsList').innerHTML = getAllTransactionsHTML();
+            }
+        }
+
+        // إغلاق نافذة المعاملة
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.remove('active');
+            document.getElementById('amountInput').value = '';
+            document.getElementById('descriptionInput').value = '';
+        }
+
+        // عرض نافذة الهدف
+        function showGoalModal() {
+            if (!appData.user) return;
+            
+            const modal = document.getElementById('goalModal');
+            modal.classList.add('active');
+            document.getElementById('goalName').focus();
+        }
+
+        // حفظ الهدف
+        function saveGoal() {
+            const name = document.getElementById('goalName').value;
+            const target = parseFloat(document.getElementById('goalTarget').value);
+            const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
+            const deadline = document.getElementById('goalDeadline').value;
+            const description = document.getElementById('goalDescription').value;
+            
+            if (!name || !target || target <= 0) {
+                showToast('يرجى إدخال بيانات الهدف بشكل صحيح');
+                return;
+            }
+            
+            const goal = {
+                id: Date.now().toString(),
+                name: name,
+                target: target,
+                current: current,
+                deadline: deadline,
+                description: description,
+                icon: "🎯",
+                color: getRandomColor(),
+                createdAt: new Date().toISOString()
+            };
+            
+            appData.goals.push(goal);
+            
+            closeGoalModal();
+            updateDashboard();
+            showToast(`تم إضافة هدف جديد: ${name}`);
+            
+            // تحديث العرض
+            const activePage = document.querySelector('.nav-item.active').dataset.page;
+            if (activePage === 'home') {
+                showHomePage();
+            } else if (activePage === 'goals') {
+                showGoalsPage();
+            }
+        }
+
+        // إغلاق نافذة الهدف
+        function closeGoalModal() {
+            document.getElementById('goalModal').classList.remove('active');
+            document.getElementById('goalName').value = '';
+            document.getElementById('goalTarget').value = '';
+            document.getElementById('goalCurrent').value = '';
+            document.getElementById('goalDescription').value = '';
+        }
+
+        // تعديل الهدف
+        function editGoal(index) {
+            if (index >= 0 && index < appData.goals.length) {
+                const goal = appData.goals[index];
+                
+                document.getElementById('goalName').value = goal.name;
+                document.getElementById('goalTarget').value = goal.target;
+                document.getElementById('goalCurrent').value = goal.current;
+                document.getElementById('goalDeadline').value = goal.deadline || '';
+                document.getElementById('goalDescription').value = goal.description || '';
+                
+                // تغيير النص في النافذة
+                document.querySelector('#goalModal .modal-title').textContent = 'تعديل هدف التوفير';
+                
+                // تغيير زر الحفظ
+                const saveBtn = document.getElementById('saveGoal');
+                saveBtn.textContent = 'تحديث الهدف';
+                saveBtn.onclick = function() {
+                    updateGoal(index);
+                };
+                
+                document.getElementById('goalModal').classList.add('active');
+            }
+        }
+
+        // تحديث الهدف
+        function updateGoal(index) {
+            const name = document.getElementById('goalName').value;
+            const target = parseFloat(document.getElementById('goalTarget').value);
+            const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
+            const deadline = document.getElementById('goalDeadline').value;
+            const description = document.getElementById('goalDescription').value;
+            
+            if (!name || !target || target <= 0) {
+                showToast('يرجى إدخال بيانات الهدف بشكل صحيح');
+                return;
+            }
+            
+            if (current > target) {
+                showToast('المبلغ المدخر لا يمكن أن يكون أكبر من الهدف');
+                return;
+            }
+            
+            appData.goals[index] = {
+                ...appData.goals[index],
+                name: name,
+                target: target,
+                current: current,
+                deadline: deadline,
+                description: description
+            };
+            
+            closeGoalModal();
+            saveUserData();
+            showToast(`تم تحديث هدف: ${name}`);
+            
+            // إعادة تعيين زر الحفظ
+            const saveBtn = document.getElementById('saveGoal');
+            saveBtn.textContent = 'حفظ الهدف';
+            saveBtn.onclick = saveGoal;
+            
+            // تحديث العرض
+            const activePage = document.querySelector('.nav-item.active').dataset.page;
+            if (activePage === 'home') {
+                showHomePage();
+            } else if (activePage === 'goals') {
+                showGoalsPage();
+            }
+        }
+
+        // عرض تحليل مالي متقدم
+        function showFinancialAnalysis() {
+            const modal = document.getElementById('financialAnalysisModal');
+            const content = document.getElementById('analysisContent');
+            
+            if (appData.transactions.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-line empty-icon"></i>
+                        <div class="empty-text">لا توجد بيانات كافية للتحليل</div>
+                        <p style="font-size: 14px; color: var(--gray); margin-top: 10px;">ابدأ بإضافة معاملاتك للحصول على تحليل مفصل</p>
+                    </div>
+                `;
+            } else {
+                // حساب الإحصائيات الشهرية
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                
+                const monthlyTransactions = appData.transactions.filter(t => {
+                    const date = new Date(t.date);
+                    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+                });
+                
+                const monthlyIncome = monthlyTransactions
+                    .filter(t => t.type === 'income')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const monthlyExpenses = monthlyTransactions
+                    .filter(t => t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const monthlySavings = monthlyIncome - monthlyExpenses;
+                
+                // تحليل الفئات
+                const categoryAnalysis = {};
+                monthlyTransactions
+                    .filter(t => t.type === 'expense')
+                    .forEach(t => {
+                        const category = t.category;
+                        categoryAnalysis[category] = (categoryAnalysis[category] || 0) + t.amount;
+                    });
+                
+                // إنشاء عرض التحليل
+                content.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: 700; margin-bottom: 15px;">📈 تحليل الشهر الحالي</div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                            <div style="text-align: center; padding: 15px; background: rgba(46, 213, 115, 0.1); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: 12px; color: var(--gray);">الدخل الشهري</div>
+                                <div style="font-size: 24px; font-weight: 800; color: var(--success);">${formatCurrency(monthlyIncome)}</div>
+                            </div>
+                            
+                            <div style="text-align: center; padding: 15px; background: rgba(255, 71, 87, 0.1); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: 12px; color: var(--gray);">المصروفات الشهرية</div>
+                                <div style="font-size: 24px; font-weight: 800; color: var(--danger);">${formatCurrency(monthlyExpenses)}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; padding: 20px; background: rgba(45, 91, 255, 0.1); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 12px; color: var(--gray);">المدخرات الشهرية</div>
+                            <div style="font-size: 32px; font-weight: 800; color: var(--primary);">${formatCurrency(monthlySavings)}</div>
+                            <div style="font-size: 14px; color: var(--gray); margin-top: 5px;">
+                                ${appData.monthlySavingGoal > 0 ? `${((monthlySavings / appData.monthlySavingGoal) * 100).toFixed(1)}% من هدفك الشهري` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: 700; margin-bottom: 15px;">📊 توزيع المصروفات</div>
+                        
+                        ${Object.keys(categoryAnalysis).length > 0 ? 
+                            Object.entries(categoryAnalysis)
+                                .sort((a, b) => b[1] - a[1])
+                                .map(([category, amount]) => {
+                                    const percentage = monthlyExpenses > 0 ? (amount / monthlyExpenses * 100) : 0;
+                                    const categoryInfo = appData.categories.expense[category];
+                                    return `
+                                        <div style="margin-bottom: 15px;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div style="width: 30px; height: 30px; border-radius: 8px; background: ${categoryInfo.color}; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
+                                                        ${categoryInfo.icon}
+                                                    </div>
+                                                    <div>${categoryInfo.name}</div>
+                                                </div>
+                                                <div style="font-weight: 700;">${formatCurrency(amount)}</div>
+                                            </div>
+                                            <div style="height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                                                <div style="height: 100%; background: ${categoryInfo.color}; border-radius: 4px; width: ${percentage}%;"></div>
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--gray); text-align: left; margin-top: 3px;">
+                                                ${percentage.toFixed(1)}% من المصروفات
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('') :
+                            '<div style="text-align: center; padding: 20px; color: var(--gray);">لا توجد مصروفات هذا الشهر</div>'
+                        }
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: var(--border-radius-sm);">
+                        <div style="font-weight: 700; margin-bottom: 10px;">💡 توصيات عملية:</div>
+                        <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                `;
+                
+                // توصيات مبنية على التحليل
+                const recommendations = [];
+                
+                if (monthlyExpenses > 0) {
+                    // البحث عن أكبر فئة مصروفات
+                    const biggestCategory = Object.entries(categoryAnalysis)
+                        .sort((a, b) => b[1] - a[1])[0];
+                    
+                    if (biggestCategory) {
+                        const categoryName = appData.categories.expense[biggestCategory[0]].name;
+                        const categoryPercentage = (biggestCategory[1] / monthlyExpenses * 100).toFixed(1);
+                        
+                        if (categoryPercentage > 30) {
+                            recommendations.push(`فئة "${categoryName}" تمثل ${categoryPercentage}% من مصروفاتك. فكر في تقليلها.`);
+                        }
+                    }
+                }
+                
+                if (monthlySavings < 0) {
+                    recommendations.push("مصروفاتك الشهرية تتجاوز دخلك. راجع مصروفاتك وقلل غير الضروري منها.");
+                } else if (monthlySavings > 0 && monthlySavings < (appData.monthlyIncome * 0.1)) {
+                    recommendations.push("نسبة توفيرك منخفضة. حاول زيادة مدخراتك إلى 10% من دخلك على الأقل.");
+                }
+                
+                if (recommendations.length > 0) {
+                    content.innerHTML += "<ul style='padding-right: 20px;'>";
+                    recommendations.forEach(rec => {
+                        content.innerHTML += `<li style='margin-bottom: 8px;'>${rec}</li>`;
+                    });
+                    content.innerHTML += "</ul>";
+                } else {
+                    content.innerHTML += "أداء مالي جيد! استمر في الحفاظ على عاداتك المالية الحالية.";
+                }
+                
+                content.innerHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // إغلاق نافذة التحليل
+        function closeAnalysisModal() {
+            document.getElementById('financialAnalysisModal').classList.remove('active');
+        }
+
+        // إغلاق نافذة الأدوات
+        function closeToolsModal() {
+            document.getElementById('financialToolsModal').classList.remove('active');
+        }
+
+        // حاسبة الميزانية
+        function showBudgetCalculator() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">حاسبة الميزانية الشهرية</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">الدخل الشهري (ج.م)</label>
+                            <input type="number" class="form-input" id="budgetIncome" value="${appData.monthlyIncome || ''}" placeholder="أدخل دخلك الشهري">
+                        </div>
+                        
+                        <div style="margin: 20px 0; padding: 20px; background: var(--light); border-radius: var(--border-radius-sm);">
+                            <div style="font-weight: 700; margin-bottom: 10px;">💡 طريقة 50/30/20:</div>
+                            <div style="font-size: 14px; color: var(--gray); line-height: 1.6;">
+                                • 50% احتياجات أساسية (سكن، طعام، مواصلات)<br>
+                                • 30% رغبات (تسوق، ترفيه، مطاعم)<br>
+                                • 20% توفير واستثمار
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateBudget()" style="width: 100%; margin-bottom: 20px;">
+                            حساب الميزانية
+                        </button>
+                        
+                        <div id="budgetResult" style="display: none;">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // حساب الميزانية
+        function calculateBudget() {
+            const income = parseFloat(document.getElementById('budgetIncome').value);
+            
+            if (!income || income <= 0) {
+                showToast('يرجى إدخال دخل صحيح');
+                return;
+            }
+            
+            const needs = income * 0.50;
+            const wants = income * 0.30;
+            const savings = income * 0.20;
+            
+            const resultDiv = document.getElementById('budgetResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div style="background: white; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow);">
+                    <div style="font-weight: 700; margin-bottom: 15px; text-align: center;">نتائج حساب الميزانية</div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div>الاحتياجات الأساسية (50%)</div>
+                            <div style="font-weight: 700; color: var(--primary);">${formatCurrency(needs)}</div>
+                        </div>
+                        <div style="height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--primary); border-radius: 4px; width: 50%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div>الرغبات (30%)</div>
+                            <div style="font-weight: 700; color: #FF9F43;">${formatCurrency(wants)}</div>
+                        </div>
+                        <div style="height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #FF9F43; border-radius: 4px; width: 30%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div>التوفير والاستثمار (20%)</div>
+                            <div style="font-weight: 700; color: var(--success);">${formatCurrency(savings)}</div>
+                        </div>
+                        <div style="height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--success); border-radius: 4px; width: 20%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: var(--border-radius-sm);">
+                        <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                            <strong>نصيحة:</strong> هذه النسب مرنة. يمكنك تعديلها بناءً على ظروفك، ولكن حاول الحفاظ على نسبة التوفير 20% كحد أدنى.
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // حفظ الدخل إذا كان جديداً
+            if (income !== appData.monthlyIncome) {
+                appData.monthlyIncome = income;
+                if (appData.user) {
+                    appData.user.monthlyIncome = income;
+                }
+                saveUserData();
+                updateDashboard();
+            }
+        }
+
+        // حاسبة الديون
+        function showDebtCalculator() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">حاسبة سداد الديون</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">إجمالي الديون (ج.م)</label>
+                            <input type="number" class="form-input" id="totalDebt" placeholder="أدخل إجمالي مديونياتك">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">المبلغ الشهري للسداد (ج.م)</label>
+                            <input type="number" class="form-input" id="monthlyPayment" placeholder="المبلغ الذي يمكنك دفعه شهرياً">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">سعر الفائدة السنوي (%)</label>
+                            <input type="number" class="form-input" id="interestRate" value="10" placeholder="نسبة الفائدة السنوية">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateDebt()" style="width: 100%; margin-bottom: 20px;">
+                            حساب خطة السداد
+                        </button>
+                        
+                        <div id="debtResult" style="display: none;">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // حساب الديون
+        function calculateDebt() {
+            const totalDebt = parseFloat(document.getElementById('totalDebt').value);
+            const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12; // فائدة شهرية
+            
+            if (!totalDebt || !monthlyPayment || totalDebt <= 0 || monthlyPayment <= 0) {
+                showToast('يرجى إدخال بيانات صحيحة');
+                return;
+            }
+            
+            if (monthlyPayment <= totalDebt * interestRate) {
+                showToast('المبلغ الشهري للسداد أقل من الفائدة. تحتاج لزيادته.');
+                return;
+            }
+            
+            // حساب وقت السداد
+            let remaining = totalDebt;
+            let months = 0;
+            let totalInterest = 0;
+            
+            while (remaining > 0 && months < 600) { // حد أقصى 50 سنة
+                const interest = remaining * interestRate;
+                const principal = monthlyPayment - interest;
+                
+                totalInterest += interest;
+                remaining -= principal;
+                months++;
+                
+                if (remaining < 0) remaining = 0;
+            }
+            
+            const years = Math.floor(months / 12);
+            const remainingMonths = months % 12;
+            const totalPaid = totalDebt + totalInterest;
+            
+            const resultDiv = document.getElementById('debtResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div style="background: white; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow);">
+                    <div style="font-weight: 700; margin-bottom: 15px; text-align: center;">نتائج خطة سداد الديون</div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 15px; background: rgba(45, 91, 255, 0.1); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 12px; color: var(--gray);">مدة السداد</div>
+                            <div style="font-size: 20px; font-weight: 800; color: var(--primary);">
+                                ${years > 0 ? `${years} سنة و ` : ''}${remainingMonths} شهر
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; padding: 15px; background: rgba(255, 71, 87, 0.1); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 12px; color: var(--gray);">إجمالي الفوائد</div>
+                            <div style="font-size: 20px; font-weight: 800; color: var(--danger);">${formatCurrency(totalInterest)}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; background: rgba(46, 213, 115, 0.1); border-radius: var(--border-radius-sm); margin-bottom: 20px;">
+                        <div style="font-size: 12px; color: var(--gray);">إجمالي المبلغ المسدد</div>
+                        <div style="font-size: 28px; font-weight: 800; color: var(--success);">${formatCurrency(totalPaid)}</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: var(--border-radius-sm);">
+                        <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                            <strong>نصائح لتسريع سداد الديون:</strong><br>
+                            1. زد المبلغ الشهري للسداد إذا أمكن<br>
+                            2. ركز على سداد الديون ذات الفوائد الأعلى أولاً<br>
+                            3. استخدم أي دخل إضافي لسداد الديون
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // خطة التوفير
+        function showSavingPlan() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">خطة التوفير المخصصة</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">هدف التوفير (ج.م)</label>
+                            <input type="number" class="form-input" id="savingTarget" placeholder="المبلغ الذي تريد توفيره">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">المدة المستهدفة (أشهر)</label>
+                            <input type="number" class="form-input" id="savingMonths" placeholder="عدد الأشهر لتحقيق الهدف">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">المبلغ المدخر حالياً (ج.م)</label>
+                            <input type="number" class="form-input" id="currentSavings" placeholder="المبلغ المدخر حتى الآن">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateSavingPlan()" style="width: 100%; margin-bottom: 20px;">
+                            إنشاء خطة التوفير
+                        </button>
+                        
+                        <div id="savingPlanResult" style="display: none;">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // حساب خطة التوفير
+        function calculateSavingPlan() {
+            const target = parseFloat(document.getElementById('savingTarget').value);
+            const months = parseInt(document.getElementById('savingMonths').value);
+            const current = parseFloat(document.getElementById('currentSavings').value) || 0;
+            
+            if (!target || !months || target <= 0 || months <= 0) {
+                showToast('يرجى إدخال بيانات صحيحة');
+                return;
+            }
+            
+            if (current >= target) {
+                showToast('لقد حققت هدفك بالفعل! 🎉');
+                return;
+            }
+            
+            const remaining = target - current;
+            const monthlySaving = remaining / months;
+            const weeklySaving = monthlySaving / 4;
+            const dailySaving = weeklySaving / 7;
+            
+            const resultDiv = document.getElementById('savingPlanResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div style="background: white; border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow);">
+                    <div style="font-weight: 700; margin-bottom: 15px; text-align: center;">خطة التوفير المقترحة</div>
+                    
+                    <div style="text-align: center; padding: 20px; background: rgba(45, 91, 255, 0.1); border-radius: var(--border-radius-sm); margin-bottom: 20px;">
+                        <div style="font-size: 12px; color: var(--gray);">المبلغ الشهري المطلوب</div>
+                        <div style="font-size: 32px; font-weight: 800; color: var(--primary);">${formatCurrency(monthlySaving)}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 15px; background: rgba(0, 194, 169, 0.1); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 12px; color: var(--gray);">الأسبوعي</div>
+                            <div style="font-size: 18px; font-weight: 800; color: var(--secondary);">${formatCurrency(weeklySaving)}</div>
+                        </div>
+                        
+                        <div style="text-align: center; padding: 15px; background: rgba(46, 213, 115, 0.1); border-radius: var(--border-radius-sm);">
+                            <div style="font-size: 12px; color: var(--gray);">اليومي</div>
+                            <div style="font-size: 18px; font-weight: 800; color: var(--success);">${formatCurrency(dailySaving)}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: var(--border-radius-sm);">
+                        <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                            <strong>نصائح لتحقيق الخطة:</strong><br>
+                            1. خصص المبلغ الشهري فور استلام دخلك<br>
+                            2. ابحث عن طرق لتقليل مصروفاتك بمقدار ${formatCurrency(monthlySaving)} شهرياً<br>
+                            3. استخدم الحساب التوفيري لفصل المبلغ المدخر
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // محلل المصروفات
+        function showExpenseAnalyzer() {
+            if (appData.transactions.filter(t => t.type === 'expense').length === 0) {
+                showToast('لا توجد مصروفات لتحليلها');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            // تحليل المصروفات
+            const expenseAnalysis = {};
+            appData.transactions
+                .filter(t => t.type === 'expense')
+                .forEach(t => {
+                    expenseAnalysis[t.category] = (expenseAnalysis[t.category] || 0) + t.amount;
+                });
+            
+            const totalExpenses = Object.values(expenseAnalysis).reduce((a, b) => a + b, 0);
+            
+            // العثور على أكبر فئة مصروفات
+            const biggestCategory = Object.entries(expenseAnalysis)
+                .sort((a, b) => b[1] - a[1])[0];
+            
+            let analysisText = "";
+            if (biggestCategory) {
+                const categoryName = appData.categories.expense[biggestCategory[0]].name;
+                const percentage = ((biggestCategory[1] / totalExpenses) * 100).toFixed(1);
+                analysisText = `أكبر فئة مصروفات هي "${categoryName}" بنسبة ${percentage}% من إجمالي مصروفاتك.`;
+            }
+            
+            // حساب متوسط المصروفات الشهرية
+            const monthlyExpenses = {};
+            appData.transactions
+                .filter(t => t.type === 'expense')
+                .forEach(t => {
+                    const month = t.date.substring(0, 7); // YYYY-MM
+                    monthlyExpenses[month] = (monthlyExpenses[month] || 0) + t.amount;
+                });
+            
+            const monthlyAverages = Object.values(monthlyExpenses);
+            const avgMonthlyExpense = monthlyAverages.length > 0 
+                ? monthlyAverages.reduce((a, b) => a + b, 0) / monthlyAverages.length 
+                : 0;
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">تحليل أنماط المصروفات</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight: 700; margin-bottom: 15px;">📊 ملخص المصروفات</div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div style="text-align: center; padding: 15px; background: rgba(255, 71, 87, 0.1); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: 12px; color: var(--gray);">إجمالي المصروفات</div>
+                                    <div style="font-size: 20px; font-weight: 800; color: var(--danger);">${formatCurrency(totalExpenses)}</div>
+                                </div>
+                                
+                                <div style="text-align: center; padding: 15px; background: rgba(255, 159, 67, 0.1); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: 12px; color: var(--gray);">المتوسط الشهري</div>
+                                    <div style="font-size: 20px; font-weight: 800; color: #FF9F43;">${formatCurrency(avgMonthlyExpense)}</div>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 15px; background: #e8f4fd; border-radius: var(--border-radius-sm);">
+                                <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                                    ${analysisText}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight: 700; margin-bottom: 15px;">📈 توزيع المصروفات</div>
+                            
+                            ${Object.entries(expenseAnalysis)
+                                .sort((a, b) => b[1] - a[1])
+                                .map(([category, amount]) => {
+                                    const percentage = totalExpenses > 0 ? (amount / totalExpenses * 100) : 0;
+                                    const categoryInfo = appData.categories.expense[category];
+                                    return `
+                                        <div style="margin-bottom: 15px;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div style="width: 30px; height: 30px; border-radius: 8px; background: ${categoryInfo.color}; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
+                                                        ${categoryInfo.icon}
+                                                    </div>
+                                                    <div>${categoryInfo.name}</div>
+                                                </div>
+                                                <div style="font-weight: 700;">${formatCurrency(amount)}</div>
+                                            </div>
+                                            <div style="height: 8px; background: var(--light-gray); border-radius: 4px; overflow: hidden;">
+                                                <div style="height: 100%; background: ${categoryInfo.color}; border-radius: 4px; width: ${percentage}%;"></div>
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--gray); text-align: left; margin-top: 3px;">
+                                                ${percentage.toFixed(1)}% من إجمالي المصروفات
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: var(--border-radius-sm);">
+                            <div style="font-weight: 700; margin-bottom: 10px;">💡 توصيات للتحسين:</div>
+                            <div style="font-size: 14px; color: var(--dark); line-height: 1.6;">
+                                1. راجع أكبر فئتين من مصروفاتك وابحث عن طرق لتقليلهما<br>
+                                2. ضع حدوداً شهرية لكل فئة من فئات المصروفات<br>
+                                3. تابع مصروفاتك أسبوعياً لتجنب الإنفاق الزائد
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // تصدير البيانات
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `جنيهات-بيانات-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast('تم تصدير البيانات بنجاح');
+        }
+
+        // استيراد البيانات
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        appData = importedData;
+                        saveUserData();
+                        updateDashboard();
+                        showHomePage();
+                        showToast('تم استيراد البيانات بنجاح');
+                    } catch (error) {
+                        showToast('خطأ في استيراد البيانات');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // تأكيد إعادة التعيين
+        function confirmReset() {
+            if (confirm('هل أنت متأكد من حذف جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                resetAllData();
+            }
+        }
+
+        // إعادة تعيين جميع البيانات
+        function resetAllData() {
+            localStorage.removeItem('genihatRealData');
+            appData = {
+                user: null,
+                balance: 0,
+                totalIncome: 0,
+                totalExpenses: 0,
+                totalSavings: 0,
+                monthlyIncome: 0,
+                monthlySavingGoal: 0,
+                transactions: [],
+                goals: [],
+                categories: {
+                    income: {
+                        salary: { name: "راتب", icon: "💰", color: "#2ED573" },
+                        freelance: { name: "عمل حر", icon: "💼", color: "#00C2A9" },
+                        investment: { name: "استثمار", icon: "📈", color: "#FF9F43" },
+                        gift: { name: "هدية", icon: "🎁", color: "#F368E0" },
+                        other_income: { name: "دخل آخر", icon: "💵", color: "#54A0FF" }
+                    },
+                    expense: {
+                        food: { name: "طعام", icon: "🍕", color: "#FF6B6B" },
+                        transport: { name: "مواصلات", icon: "🚗", color: "#54A0FF" },
+                        shopping: { name: "تسوق", icon: "🛍️", color: "#5F27CD" },
+                        bills: { name: "فواتير", icon: "📄", color: "#00D2D3" },
+                        entertainment: { name: "ترفيه", icon: "🎬", color: "#FF9F43" },
+                        health: { name: "صحة", icon: "🏥", color: "#1DD1A1" },
+                        education: { name: "تعليم", icon: "📚", color: "#F368E0" },
+                        other_expense: { name: "مصروف آخر", icon: "📦", color: "#8395A7" }
+                    }
+                }
+            };
+            
+            document.getElementById('appContainer').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('welcomeScreen').classList.remove('hidden');
+                showToast('تم حذف جميع البيانات');
+            }, 500);
+        }
+
+        // عرض كل المعاملات
+        function getAllTransactionsHTML() {
+            if (appData.transactions.length === 0) {
+                return `
+                    <div class="empty-state" style="padding: 20px;">
+                        <div class="empty-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="empty-text">لا توجد معاملات حالياً</div>
+                    </div>
+                `;
+            }
+            
+            const sortedTransactions = [...appData.transactions]
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            return sortedTransactions.map(transaction => {
+                const category = appData.categories[transaction.type][transaction.category];
+                const isIncome = transaction.type === 'income';
+                
+                return `
+                    <div class="transaction-item" onclick="editTransaction('${transaction.id}')">
+                        <div class="transaction-icon" style="background: ${category.color}">
+                            ${category.icon}
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">${transaction.description || category.name}</div>
+                            <div class="transaction-info">
+                                <span>${formatDate(transaction.date)}</span>
+                                <span>${category.name}</span>
+                            </div>
+                        </div>
+                        <div class="transaction-amount ${isIncome ? 'income' : 'expense'}">
+                            ${isIncome ? '+' : '-'}${formatCurrency(transaction.amount)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // تعديل معاملة
+        function editTransaction(id) {
+            // يمكن إضافة هذه الوظيفة لاحقاً
+            showToast('ميزة تعديل المعاملات قريباً');
+        }
+
+        // الحصول على لون عشوائي
+        function getRandomColor() {
+            const colors = [
+                '#2D5BFF', '#00C2A9', '#FF9F43', '#F368E0', '#FF6B6B',
+                '#54A0FF', '#5F27CD', '#00D2D3', '#1DD1A1', '#FFA502'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // تنسيق العملة
+        function formatCurrency(amount) {
+            if (isNaN(amount)) amount = 0;
+            return amount.toLocaleString('ar-EG', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
+
+        // تنسيق التاريخ
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ar-EG', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // عرض رسالة تأكيد
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // تعيين ارتفاع التطبيق
+        function setAppHeight() {
+            const appHeight = window.innerHeight;
+            document.documentElement.style.setProperty('--app-height', `${appHeight}px`);
+        }
+
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight();
+    </script>
+</body>
+</html>
